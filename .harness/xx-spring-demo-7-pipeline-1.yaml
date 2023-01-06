@@ -1,0 +1,45 @@
+pipeline:
+  name: xx-spring-demo-7-pipeline-1
+  identifier: xxspringdemo7pipeline1
+  projectIdentifier: Default_Project_1671068007356
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: helm-deploy
+        identifier: helmdeploy
+        description: ""
+        type: Deployment
+        spec:
+          deploymentType: NativeHelm
+          service:
+            serviceRef: xxspringdemo7
+          environment:
+            environmentRef: xxspringdemo7env1
+            deployToAll: false
+            infrastructureDefinitions:
+              - identifier: xxspringdemo7env1infradef1
+          execution:
+            steps:
+              - step:
+                  name: Helm Deployment
+                  identifier: helmDeployment
+                  type: HelmDeploy
+                  timeout: 10m
+                  spec:
+                    skipDryRun: false
+            rollbackSteps:
+              - step:
+                  name: Helm Rollback
+                  identifier: helmRollback
+                  type: HelmRollback
+                  timeout: 10m
+                  spec: {}
+        tags: {}
+        failureStrategies:
+          - onFailure:
+              errors:
+                - AllErrors
+              action:
+                type: StageRollback
+
